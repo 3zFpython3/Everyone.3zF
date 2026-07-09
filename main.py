@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 
 import discord
@@ -6,29 +5,29 @@ from discord.ext import commands
 import asyncio
 import os
 import sys
-from colorama import init, Fore, Style
 
-init(autoreset=True)
-
-BLUE = Fore.BLUE + Style.BRIGHT
-CYAN = Fore.CYAN
-WHITE = Fore.WHITE
-GREEN = Fore.GREEN
-RED = Fore.RED
-YELLOW = Fore.YELLOW
-RESET = Fore.RESET
+# ========== COLORS ==========
+BLUE = '\033[94m'
+DARK_BLUE = '\033[34m'
+CYAN = '\033[96m'
+WHITE = '\033[97m'
+GREEN = '\033[92m'
+RED = '\033[91m'
+YELLOW = '\033[93m'
+RESET = '\033[0m'
+BOLD = '\033[1m'
 
 def clear():
     os.system('clear' if os.name != 'nt' else 'cls')
 
 clear()
 
-print(f"{BLUE}=" * 60)
-print(f"{BLUE}            RYNDE BOT V7")
-print(f"{BLUE}=" * 60)
+print(f"{DARK_BLUE}{BOLD}=" * 60)
+print(f"{DARK_BLUE}{BOLD}            RYNDE BOT")
+print(f"{DARK_BLUE}{BOLD}=" * 60)
 print("")
 
-TOKEN = input(f"{CYAN}[?]{WHITE} Token: ").strip()
+TOKEN = input(f"{DARK_BLUE}[?]{WHITE} Token: ").strip()
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix="!", intents=intents)
@@ -37,56 +36,58 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 async def on_ready():
     clear()
     print(f"""
-{BLUE} ██████╗██╗   ██╗███╗   ██╗██████╗ ███████╗
-{BLUE}██╔════╝██║   ██║████╗  ██║██╔══██╗██╔════╝
-{BLUE}██║     ██║   ██║██╔██╗ ██║██████╔╝███████╗
-{BLUE}██║     ██║   ██║██║╚██╗██║██╔══██╗╚════██║
-{BLUE}╚██████╗╚██████╔╝██║ ╚████║██████╔╝███████║
-{BLUE} ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝╚═════╝ ╚══════╝
+{DARK_BLUE}{BOLD} ██████╗██╗   ██╗███╗   ██╗██████╗ ███████╗
+{DARK_BLUE}{BOLD}██╔════╝██║   ██║████╗  ██║██╔══██╗██╔════╝
+{DARK_BLUE}{BOLD}██║     ██║   ██║██╔██╗ ██║██████╔╝███████╗
+{DARK_BLUE}{BOLD}██║     ██║   ██║██║╚██╗██║██╔══██╗╚════██║
+{DARK_BLUE}{BOLD}╚██████╗╚██████╔╝██║ ╚████║██████╔╝███████║
+{DARK_BLUE}{BOLD} ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝╚═════╝ ╚══════╝
     """)
-    print(f"{BLUE}=" * 60)
-    print(f"{GREEN}[✓]{WHITE} {bot.user}")
-    print(f"{GREEN}[✓]{WHITE} {len(bot.guilds)} Servers")
-    print(f"{BLUE}=" * 60)
+    print(f"{DARK_BLUE}{BOLD}=" * 60)
+    print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {bot.user}")
+    print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {len(bot.guilds)} Servers")
+    print(f"{DARK_BLUE}{BOLD}=" * 60)
     print("")
     
-    print(f"{CYAN}[?]{WHITE} Server:")
+    print(f"{DARK_BLUE}[?]{WHITE} Select Server:")
     print("")
     for i, guild in enumerate(bot.guilds, 1):
-        print(f"  {BLUE}[{CYAN}{i}{BLUE}]{WHITE} {guild.name}")
+        print(f"  {DARK_BLUE}[{CYAN}{i}{DARK_BLUE}]{WHITE} {guild.name}")
     print("")
-    print(f"{BLUE}=" * 60)
+    print(f"{DARK_BLUE}{BOLD}=" * 60)
     print("")
     
     try:
-        choice = int(input(f"{CYAN}[?]{WHITE} Number: ").strip())
+        choice = int(input(f"{DARK_BLUE}[?]{WHITE} Number: ").strip())
         
         if 1 <= choice <= len(bot.guilds):
             guild = bot.guilds[choice - 1]
             clear()
             print(f"""
-{BLUE} ██████╗██╗   ██╗███╗   ██╗██████╗ ███████╗
-{BLUE}██╔════╝██║   ██║████╗  ██║██╔══██╗██╔════╝
-{BLUE}██║     ██║   ██║██╔██╗ ██║██████╔╝███████╗
-{BLUE}██║     ██║   ██║██║╚██╗██║██╔══██╗╚════██║
-{BLUE}╚██████╗╚██████╔╝██║ ╚████║██████╔╝███████║
-{BLUE} ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝╚═════╝ ╚══════╝
+{DARK_BLUE}{BOLD} ██████╗██╗   ██╗███╗   ██╗██████╗ ███████╗
+{DARK_BLUE}{BOLD}██╔════╝██║   ██║████╗  ██║██╔══██╗██╔════╝
+{DARK_BLUE}{BOLD}██║     ██║   ██║██╔██╗ ██║██████╔╝███████╗
+{DARK_BLUE}{BOLD}██║     ██║   ██║██║╚██╗██║██╔══██╗╚════██║
+{DARK_BLUE}{BOLD}╚██████╗╚██████╔╝██║ ╚████║██████╔╝███████║
+{DARK_BLUE}{BOLD} ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝╚═════╝ ╚══════╝
     """)
-            print(f"{BLUE}=" * 60)
-            print(f"{GREEN}[✓]{WHITE} {guild.name}")
-            print(f"{BLUE}=" * 60)
+            print(f"{DARK_BLUE}{BOLD}=" * 60)
+            print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {guild.name}")
+            print(f"{DARK_BLUE}{BOLD}=" * 60)
             print("")
-            print(f"  {BLUE}[{CYAN}1{BLUE}]{WHITE} Create Rooms")
-            print(f"  {BLUE}[{CYAN}2{BLUE}]{WHITE} Delete All")
-            print(f"  {BLUE}[{CYAN}3{BLUE}]{WHITE} Spam All")
-            print(f"  {BLUE}[{CYAN}4{BLUE}]{WHITE} Exit")
+            print(f"  {DARK_BLUE}[{CYAN}1{DARK_BLUE}]{WHITE} Create Rooms")
+            print(f"  {DARK_BLUE}[{CYAN}2{DARK_BLUE}]{WHITE} Delete All")
+            print(f"  {DARK_BLUE}[{CYAN}3{DARK_BLUE}]{WHITE} Spam All")
+            print(f"  {DARK_BLUE}[{CYAN}4{DARK_BLUE}]{WHITE} Exit")
             print("")
-            print(f"{BLUE}=" * 60)
+            print(f"{DARK_BLUE}{BOLD}=" * 60)
+            print("")
+            print(f"{DARK_BLUE}Dev By 3zF{RESET}")
             print("")
             
             while True:
                 try:
-                    cmd = input(f"{CYAN}[?]{WHITE} Option (1-4): ").strip()
+                    cmd = input(f"{DARK_BLUE}[?]{WHITE} Option (1-4): ").strip()
                     
                     if cmd == "1":
                         await create_rooms(guild)
@@ -95,97 +96,106 @@ async def on_ready():
                     elif cmd == "3":
                         await spam_all(guild)
                     elif cmd == "4":
-                        print(f"{YELLOW}[!]{WHITE} Exiting...")
+                        print(f"{DARK_BLUE}[!]{WHITE} Exiting...")
                         await bot.close()
                         sys.exit()
                     else:
-                        print(f"{RED}[!]{WHITE} Invalid!")
+                        print(f"{DARK_BLUE}[!]{WHITE} Invalid!")
                         
                 except KeyboardInterrupt:
-                    print(f"\n{YELLOW}[!]{WHITE} Exiting...")
+                    print(f"\n{DARK_BLUE}[!]{WHITE} Exiting...")
                     await bot.close()
                     sys.exit()
         else:
-            print(f"{RED}[!]{WHITE} Invalid!")
+            print(f"{DARK_BLUE}[!]{WHITE} Invalid!")
             await bot.close()
             
     except ValueError:
-        print(f"{RED}[!]{WHITE} Number!")
+        print(f"{DARK_BLUE}[!]{WHITE} Number!")
         await bot.close()
 
 async def create_rooms(guild):
     clear()
-    print(f"{BLUE}=" * 60)
-    print(f"{BLUE}  [1] CREATE ROOMS")
-    print(f"{BLUE}=" * 60)
+    print(f"{DARK_BLUE}{BOLD}=" * 60)
+    print(f"{DARK_BLUE}{BOLD}  [1] CREATE ROOMS")
+    print(f"{DARK_BLUE}{BOLD}=" * 60)
     print("")
     
-    name = input(f"{CYAN}[?]{WHITE} Name: ").strip()
-    count = int(input(f"{CYAN}[?]{WHITE} Count: ").strip())
+    name = input(f"{DARK_BLUE}[?]{WHITE} Name: ").strip()
+    count = int(input(f"{DARK_BLUE}[?]{WHITE} Count: ").strip())
     
-    print(f"\n{CYAN}[+]{WHITE} Creating {count} rooms...\n")
+    print(f"\n{DARK_BLUE}[+]{WHITE} Creating {count} rooms...\n")
     
-    # دفعة وحدة متوازية
-    tasks = [guild.create_text_channel(name) for _ in range(count)]
-    channels = await asyncio.gather(*tasks, return_exceptions=True)
-    created = sum(1 for c in channels if not isinstance(c, Exception))
+    chunk_size = 10
+    created = 0
     
-    print(f"{GREEN}[✓]{WHITE} {created} rooms created!")
+    for i in range(0, count, chunk_size):
+        chunk = min(chunk_size, count - i)
+        tasks = [guild.create_text_channel(name) for _ in range(chunk)]
+        channels = await asyncio.gather(*tasks, return_exceptions=True)
+        created += sum(1 for c in channels if not isinstance(c, Exception))
+        print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {created}/{count}")
+    
+    print(f"\n{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {created} rooms created!")
     print("")
-    input(f"{CYAN}[?]{WHITE} Enter...")
+    input(f"{DARK_BLUE}[?]{WHITE} Enter...")
     await main_menu(guild)
 
 async def delete_all(guild):
     clear()
-    print(f"{BLUE}=" * 60)
-    print(f"{BLUE}  [2] DELETE ALL")
-    print(f"{BLUE}=" * 60)
+    print(f"{DARK_BLUE}{BOLD}=" * 60)
+    print(f"{DARK_BLUE}{BOLD}  [2] DELETE ALL")
+    print(f"{DARK_BLUE}{BOLD}=" * 60)
     print("")
     
-    confirm = input(f"{RED}[⚠]{WHITE} Delete ALL? (y/n): ").strip().lower()
+    confirm = input(f"{DARK_BLUE}[{RED}!{DARK_BLUE}]{WHITE} Delete ALL? (y/n): ").strip().lower()
     
     if confirm == "y":
-        print(f"\n{CYAN}[+]{WHITE} Deleting all channels...\n")
+        print(f"\n{DARK_BLUE}[+]{WHITE} Deleting all channels...\n")
         
-        # دفعة وحدة متوازية
-        tasks = [channel.delete() for channel in guild.channels]
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-        deleted = sum(1 for r in results if not isinstance(r, Exception))
+        chunk_size = 10
+        deleted = 0
+        channels = list(guild.channels)
         
-        print(f"{GREEN}[✓]{WHITE} {deleted} channels deleted!")
+        for i in range(0, len(channels), chunk_size):
+            chunk = channels[i:i+chunk_size]
+            tasks = [c.delete() for c in chunk]
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            deleted += sum(1 for r in results if not isinstance(r, Exception))
+            print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {deleted}/{len(channels)}")
+        
+        print(f"\n{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {deleted} channels deleted!")
     else:
-        print(f"{YELLOW}[!]{WHITE} Cancelled!")
+        print(f"{DARK_BLUE}[!]{WHITE} Cancelled!")
     
     print("")
-    input(f"{CYAN}[?]{WHITE} Enter...")
+    input(f"{DARK_BLUE}[?]{WHITE} Enter...")
     await main_menu(guild)
 
 async def spam_all(guild):
     clear()
-    print(f"{BLUE}=" * 60)
-    print(f"{BLUE}  [3] SPAM ALL")
-    print(f"{BLUE}=" * 60)
+    print(f"{DARK_BLUE}{BOLD}=" * 60)
+    print(f"{DARK_BLUE}{BOLD}  [3] SPAM ALL")
+    print(f"{DARK_BLUE}{BOLD}=" * 60)
     print("")
     
-    # جلب كل الرومات النصية
     text_channels = [c for c in guild.channels if isinstance(c, discord.TextChannel)]
     
     if not text_channels:
-        print(f"{RED}[!]{WHITE} No text channels found!")
+        print(f"{DARK_BLUE}[!]{WHITE} No text channels!")
         print("")
-        input(f"{CYAN}[?]{WHITE} Enter...")
+        input(f"{DARK_BLUE}[?]{WHITE} Enter...")
         await main_menu(guild)
         return
     
-    print(f"{GREEN}[✓]{WHITE} Found {len(text_channels)} text channels")
+    print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {len(text_channels)} channels")
     print("")
     
-    msg = input(f"{CYAN}[?]{WHITE} Message: ").strip()
-    count = int(input(f"{CYAN}[?]{WHITE} Times per channel: ").strip())
+    msg = input(f"{DARK_BLUE}[?]{WHITE} Message: ").strip()
+    count = int(input(f"{DARK_BLUE}[?]{WHITE} Times: ").strip())
     
-    print(f"\n{CYAN}[+]{WHITE} Sending {count} messages to {len(text_channels)} channels...\n")
+    print(f"\n{DARK_BLUE}[+]{WHITE} Sending {count} messages to {len(text_channels)} channels...\n")
     
-    # دفعة وحدة متوازية لكل الرومات
     all_tasks = []
     for channel in text_channels:
         for i in range(count):
@@ -194,36 +204,38 @@ async def spam_all(guild):
     results = await asyncio.gather(*all_tasks, return_exceptions=True)
     sent = sum(1 for r in results if not isinstance(r, Exception))
     
-    print(f"{GREEN}[✓]{WHITE} Sent {sent} messages to {len(text_channels)} channels!")
+    print(f"\n{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} Sent {sent} messages!")
     print("")
-    input(f"{CYAN}[?]{WHITE} Enter...")
+    input(f"{DARK_BLUE}[?]{WHITE} Enter...")
     await main_menu(guild)
 
 async def main_menu(guild):
     clear()
     print(f"""
-{BLUE} ██████╗██╗   ██╗███╗   ██╗██████╗ ███████╗
-{BLUE}██╔════╝██║   ██║████╗  ██║██╔══██╗██╔════╝
-{BLUE}██║     ██║   ██║██╔██╗ ██║██████╔╝███████╗
-{BLUE}██║     ██║   ██║██║╚██╗██║██╔══██╗╚════██║
-{BLUE}╚██████╗╚██████╔╝██║ ╚████║██████╔╝███████║
-{BLUE} ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝╚═════╝ ╚══════╝
+{DARK_BLUE}{BOLD} ██████╗██╗   ██╗███╗   ██╗██████╗ ███████╗
+{DARK_BLUE}{BOLD}██╔════╝██║   ██║████╗  ██║██╔══██╗██╔════╝
+{DARK_BLUE}{BOLD}██║     ██║   ██║██╔██╗ ██║██████╔╝███████╗
+{DARK_BLUE}{BOLD}██║     ██║   ██║██║╚██╗██║██╔══██╗╚════██║
+{DARK_BLUE}{BOLD}╚██████╗╚██████╔╝██║ ╚████║██████╔╝███████║
+{DARK_BLUE}{BOLD} ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝╚═════╝ ╚══════╝
     """)
-    print(f"{BLUE}=" * 60)
-    print(f"{GREEN}[✓]{WHITE} {guild.name}")
-    print(f"{BLUE}=" * 60)
+    print(f"{DARK_BLUE}{BOLD}=" * 60)
+    print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {guild.name}")
+    print(f"{DARK_BLUE}{BOLD}=" * 60)
     print("")
-    print(f"  {BLUE}[{CYAN}1{BLUE}]{WHITE} Create Rooms")
-    print(f"  {BLUE}[{CYAN}2{BLUE}]{WHITE} Delete All")
-    print(f"  {BLUE}[{CYAN}3{BLUE}]{WHITE} Spam All")
-    print(f"  {BLUE}[{CYAN}4{BLUE}]{WHITE} Exit")
+    print(f"  {DARK_BLUE}[{CYAN}1{DARK_BLUE}]{WHITE} Create Rooms")
+    print(f"  {DARK_BLUE}[{CYAN}2{DARK_BLUE}]{WHITE} Delete All")
+    print(f"  {DARK_BLUE}[{CYAN}3{DARK_BLUE}]{WHITE} Spam All")
+    print(f"  {DARK_BLUE}[{CYAN}4{DARK_BLUE}]{WHITE} Exit")
     print("")
-    print(f"{BLUE}=" * 60)
+    print(f"{DARK_BLUE}{BOLD}=" * 60)
+    print("")
+    print(f"{DARK_BLUE}Dev By 3zF{RESET}")
     print("")
     
     while True:
         try:
-            cmd = input(f"{CYAN}[?]{WHITE} Option (1-4): ").strip()
+            cmd = input(f"{DARK_BLUE}[?]{WHITE} Option (1-4): ").strip()
             
             if cmd == "1":
                 await create_rooms(guild)
@@ -235,20 +247,20 @@ async def main_menu(guild):
                 await spam_all(guild)
                 break
             elif cmd == "4":
-                print(f"{YELLOW}[!]{WHITE} Exiting...")
+                print(f"{DARK_BLUE}[!]{WHITE} Exiting...")
                 await bot.close()
                 sys.exit()
             else:
-                print(f"{RED}[!]{WHITE} Invalid!")
+                print(f"{DARK_BLUE}[!]{WHITE} Invalid!")
                 
         except KeyboardInterrupt:
-            print(f"\n{YELLOW}[!]{WHITE} Exiting...")
+            print(f"\n{DARK_BLUE}[!]{WHITE} Exiting...")
             await bot.close()
             sys.exit()
 
 try:
     bot.run(TOKEN)
 except discord.LoginFailure:
-    print(f"{RED}[!]{WHITE} Invalid Token!")
+    print(f"{DARK_BLUE}[!]{WHITE} Invalid Token!")
 except Exception as e:
-    print(f"{RED}[!]{WHITE} Error: {e}")
+    print(f"{DARK_BLUE}[!]{WHITE} Error: {e}")

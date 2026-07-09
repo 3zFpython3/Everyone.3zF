@@ -5,12 +5,14 @@ from discord.ext import commands
 import asyncio
 import os
 import sys
+import time
 
 DARK_BLUE = '\033[34m'
 CYAN = '\033[96m'
 WHITE = '\033[97m'
 GREEN = '\033[92m'
 RED = '\033[91m'
+YELLOW = '\033[93m'
 RESET = '\033[0m'
 BOLD = '\033[1m'
 
@@ -243,10 +245,10 @@ async def spam_all(guild):
     print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {len(channels)} channels")
     print("")
     
-    msg = input(f"{DARK_BLUE}[?]{WHITE} Msg: ").strip()
+    msg = input(f"{DARK_BLUE}[?]{WHITE} Message: ").strip()
     count = int(input(f"{DARK_BLUE}[?]{WHITE} Times: ").strip())
     
-    print(f"\n{DARK_BLUE}[+]{WHITE} Spamming {count} to {len(channels)}...\n")
+    print(f"\n{DARK_BLUE}[+]{WHITE} Spamming {count} messages to {len(channels)} channels...\n")
     
     total = len(channels) * count
     sent = 0
@@ -256,7 +258,7 @@ async def spam_all(guild):
     for ch in channels:
         for i in range(count):
             tasks.append(ch.send(msg))
-            task_info.append(f"{ch.name}")
+            task_info.append(f"{msg}")
     
     chunk = 1000
     
@@ -301,9 +303,9 @@ async def dm_all(guild):
     print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {len(members)} members")
     print("")
     
-    msg = input(f"{DARK_BLUE}[?]{WHITE} Msg: ").strip()
+    msg = input(f"{DARK_BLUE}[?]{WHITE} Message: ").strip()
     
-    print(f"\n{DARK_BLUE}[+]{WHITE} Sending DM to {len(members)}...\n")
+    print(f"\n{DARK_BLUE}[+]{WHITE} Sending DM to {len(members)} members...\n")
     
     sent = 0
     chunk = 100
@@ -317,14 +319,14 @@ async def dm_all(guild):
             try:
                 dm = await m.create_dm()
                 tasks.append(dm.send(msg))
-                task_info.append(m.id)
+                task_info.append(f"{msg}")
             except:
                 pass
         if tasks:
             results = await asyncio.gather(*tasks, return_exceptions=True)
             for idx, r in enumerate(results):
                 if not isinstance(r, Exception):
-                    print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} Sent DM to {task_info[idx]}")
+                    print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} Sent DM: {task_info[idx]}")
                     sent += 1
     
     print(f"\n{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {sent} DMs sent!")
@@ -365,31 +367,40 @@ async def webhook_spam(guild):
     
     print(f"\n{DARK_BLUE}[+]{WHITE} Creating {count} webhooks in {len(channels)} channels...\n")
     
-    total = len(channels) * count
+    # MAX SPEED - Create all webhooks at once
+    all_tasks = []
+    all_channels = []
+    for ch in channels:
+        for i in range(count):
+            all_tasks.append(ch.create_webhook(name=name))
+            all_channels.append(ch.name)
+    
+    chunk = 500
     created = 0
+    total = len(all_tasks)
     all_webhooks = []
     
-    for ch in channels:
-        tasks = []
-        for i in range(count):
-            tasks.append(ch.create_webhook(name=name))
-        results = await asyncio.gather(*tasks, return_exceptions=True)
+    for i in range(0, len(all_tasks), chunk):
+        batch = all_tasks[i:i+chunk]
+        channel_batch = all_channels[i:i+chunk]
+        results = await asyncio.gather(*batch, return_exceptions=True)
         for idx, r in enumerate(results):
             if not isinstance(r, Exception):
-                print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} Created Webhook: {ch.name}")
+                print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} Created: {channel_batch[idx]}")
                 all_webhooks.append(r)
                 created += 1
     
     print(f"\n{DARK_BLUE}[+]{WHITE} Spamming with {len(all_webhooks)} webhooks...\n")
     
+    # MAX SPEED - Send all messages at once
     spam_tasks = []
     spam_info = []
     for idx, wh in enumerate(all_webhooks):
         for i in range(5):
             spam_tasks.append(wh.send(msg))
-            spam_info.append(f"Webhook #{idx+1}")
+            spam_info.append(f"{msg}")
     
-    chunk = 1000
+    chunk = 500
     sent = 0
     total_spam = len(spam_tasks)
     
@@ -399,7 +410,7 @@ async def webhook_spam(guild):
         results = await asyncio.gather(*batch, return_exceptions=True)
         for idx, r in enumerate(results):
             if not isinstance(r, Exception):
-                print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {info_batch[idx]}")
+                print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} Sent: {info_batch[idx]}")
                 sent += 1
     
     print(f"\n{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {created} webhooks created!")

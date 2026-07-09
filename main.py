@@ -7,13 +7,11 @@ import os
 import sys
 
 # ========== COLORS ==========
-BLUE = '\033[94m'
 DARK_BLUE = '\033[34m'
 CYAN = '\033[96m'
 WHITE = '\033[97m'
 GREEN = '\033[92m'
 RED = '\033[91m'
-YELLOW = '\033[93m'
 RESET = '\033[0m'
 BOLD = '\033[1m'
 
@@ -140,7 +138,8 @@ async def create_rooms(guild):
     
     print(f"\n{DARK_BLUE}[+]{WHITE} Creating {count} rooms...\n")
     
-    chunk_size = 50
+    # SUPER FAST - 100 per batch
+    chunk_size = 100
     created = 0
     
     for i in range(0, count, chunk_size):
@@ -208,23 +207,28 @@ async def spam_all(guild):
     msg = input(f"{DARK_BLUE}[?]{WHITE} Message: ").strip()
     count = int(input(f"{DARK_BLUE}[?]{WHITE} Times: ").strip())
     
-    print(f"\n{DARK_BLUE}[+]{WHITE} Sending {count} messages to {len(text_channels)} channels...\n")
+    print(f"\n{DARK_BLUE}[+]{WHITE} Spamming {count} messages to {len(text_channels)} channels...\n")
     
+    # EXTREME SPAM - Parallel across all channels
+    total_messages = len(text_channels) * count
+    sent = 0
+    
+    # Create tasks for all messages at once
     all_tasks = []
     for channel in text_channels:
         for i in range(count):
             all_tasks.append(channel.send(msg))
     
-    chunk_size = 100
-    sent = 0
+    # Send in chunks of 200 for maximum speed
+    chunk_size = 200
     
     for i in range(0, len(all_tasks), chunk_size):
         chunk = all_tasks[i:i+chunk_size]
         results = await asyncio.gather(*chunk, return_exceptions=True)
         sent += sum(1 for r in results if not isinstance(r, Exception))
-        print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {sent}/{len(all_tasks)}")
+        print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {sent}/{total_messages}")
     
-    print(f"\n{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} Sent {sent} messages!")
+    print(f"\n{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} Sent {sent} messages to {len(text_channels)} channels!")
     print("")
     input(f"{DARK_BLUE}[?]{WHITE} Enter...")
     await main_menu(guild)

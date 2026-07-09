@@ -257,19 +257,22 @@ async def dm_all(guild):
     print(f"\n{DARK_BLUE}[+]{WHITE} Sending DM to {len(members)} members...\n")
     
     sent = 0
-    chunk_size = 50
+    chunk_size = 30
     
     for i in range(0, len(members), chunk_size):
         chunk = members[i:i+chunk_size]
         tasks = []
         for member in chunk:
             try:
-                tasks.append(member.send(msg))
+                dm_channel = await member.create_dm()
+                tasks.append(dm_channel.send(msg))
             except:
                 pass
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-        sent += sum(1 for r in results if not isinstance(r, Exception))
+        if tasks:
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+            sent += sum(1 for r in results if not isinstance(r, Exception))
         print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {sent}/{len(members)}")
+        await asyncio.sleep(0.5)
     
     print(f"\n{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} Sent DM to {sent} members!")
     print("")

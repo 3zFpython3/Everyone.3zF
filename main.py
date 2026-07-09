@@ -5,14 +5,11 @@ from discord.ext import commands
 import asyncio
 import os
 import sys
-import time
 
-DARK_BLUE = '\033[34m'
-CYAN = '\033[96m'
-WHITE = '\033[97m'
 GREEN = '\033[92m'
+DARK_BLUE = '\033[34m'
+WHITE = '\033[97m'
 RED = '\033[91m'
-YELLOW = '\033[93m'
 RESET = '\033[0m'
 BOLD = '\033[1m'
 
@@ -43,8 +40,8 @@ async def on_ready():
 {DARK_BLUE}{BOLD} ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝╚═════╝ ╚══════╝
     """)
     print(f"{DARK_BLUE}{BOLD}=" * 60)
-    print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {bot.user}")
-    print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {len(bot.guilds)} Servers")
+    print(f"{GREEN}[+]{WHITE} {bot.user}")
+    print(f"{GREEN}[+]{WHITE} {len(bot.guilds)} Servers")
     print(f"{DARK_BLUE}{BOLD}=" * 60)
     print("")
     print(f"{DARK_BLUE}{BOLD}╔════════════════════════════════════════════════╗")
@@ -59,7 +56,7 @@ async def on_ready():
     print(f"{DARK_BLUE}[?]{WHITE} Select Server:")
     print("")
     for i, guild in enumerate(bot.guilds, 1):
-        print(f"  {DARK_BLUE}[{CYAN}{i}{DARK_BLUE}]{WHITE} {guild.name}")
+        print(f"  {DARK_BLUE}[{GREEN}{i}{DARK_BLUE}]{WHITE} {guild.name}")
     print("")
     print(f"{DARK_BLUE}{BOLD}=" * 60)
     print("")
@@ -71,11 +68,11 @@ async def on_ready():
             guild = bot.guilds[choice - 1]
             await main_menu(guild)
         else:
-            print(f"{DARK_BLUE}[!]{WHITE} Invalid!")
+            print(f"{RED}[!]{WHITE} Invalid!")
             await bot.close()
             
     except ValueError:
-        print(f"{DARK_BLUE}[!]{WHITE} Number!")
+        print(f"{RED}[!]{WHITE} Number!")
         await bot.close()
 
 async def main_menu(guild):
@@ -89,7 +86,7 @@ async def main_menu(guild):
 {DARK_BLUE}{BOLD} ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝╚═════╝ ╚══════╝
     """)
     print(f"{DARK_BLUE}{BOLD}=" * 60)
-    print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {guild.name}")
+    print(f"{GREEN}[+]{WHITE} {guild.name}")
     print(f"{DARK_BLUE}{BOLD}=" * 60)
     print("")
     print(f"{DARK_BLUE}{BOLD}╔════════════════════════════════════════════════╗")
@@ -100,12 +97,12 @@ async def main_menu(guild):
     print(f"{DARK_BLUE}{BOLD}║{WHITE}         Developer: 3zF                      {DARK_BLUE}{BOLD}║")
     print(f"{DARK_BLUE}{BOLD}╚════════════════════════════════════════════════╝")
     print("")
-    print(f"  {DARK_BLUE}[{CYAN}1{DARK_BLUE}]{WHITE} Create")
-    print(f"  {DARK_BLUE}[{CYAN}2{DARK_BLUE}]{WHITE} Delete")
-    print(f"  {DARK_BLUE}[{CYAN}3{DARK_BLUE}]{WHITE} Spam")
-    print(f"  {DARK_BLUE}[{CYAN}4{DARK_BLUE}]{WHITE} DM")
-    print(f"  {DARK_BLUE}[{CYAN}5{DARK_BLUE}]{WHITE} Webhook")
-    print(f"  {DARK_BLUE}[{CYAN}6{DARK_BLUE}]{WHITE} Exit")
+    print(f"  {DARK_BLUE}[{GREEN}1{DARK_BLUE}]{WHITE} Create")
+    print(f"  {DARK_BLUE}[{GREEN}2{DARK_BLUE}]{WHITE} Delete")
+    print(f"  {DARK_BLUE}[{GREEN}3{DARK_BLUE}]{WHITE} Spam")
+    print(f"  {DARK_BLUE}[{GREEN}4{DARK_BLUE}]{WHITE} DM")
+    print(f"  {DARK_BLUE}[{GREEN}5{DARK_BLUE}]{WHITE} Webhook")
+    print(f"  {DARK_BLUE}[{GREEN}6{DARK_BLUE}]{WHITE} Exit")
     print("")
     print(f"{DARK_BLUE}{BOLD}=" * 60)
     print("")
@@ -125,14 +122,14 @@ async def main_menu(guild):
             elif cmd == "5":
                 await webhook_spam(guild)
             elif cmd == "6":
-                print(f"{DARK_BLUE}[!]{WHITE} Exiting...")
+                print(f"{RED}[!]{WHITE} Exiting...")
                 await bot.close()
                 sys.exit()
             else:
-                print(f"{DARK_BLUE}[!]{WHITE} Invalid!")
+                print(f"{RED}[!]{WHITE} Invalid!")
                 
         except KeyboardInterrupt:
-            print(f"\n{DARK_BLUE}[!]{WHITE} Exiting...")
+            print(f"\n{RED}[!]{WHITE} Exiting...")
             await bot.close()
             sys.exit()
 
@@ -156,9 +153,8 @@ async def create_rooms(guild):
     
     print(f"\n{DARK_BLUE}[+]{WHITE} Creating {count} rooms...\n")
     
-    chunk = 1000
+    chunk = 2000
     created = 0
-    total = count
     
     for i in range(0, count, chunk):
         batch = min(chunk, count - i)
@@ -168,10 +164,10 @@ async def create_rooms(guild):
         results = await asyncio.gather(*tasks, return_exceptions=True)
         for r in results:
             if not isinstance(r, Exception):
-                print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} Created: {name}")
+                print(f"{GREEN}[+]{WHITE} Created: {name}")
                 created += 1
     
-    print(f"\n{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {created} rooms created!")
+    print(f"\n{GREEN}[+]{WHITE} {created} rooms created!")
     print("")
     input(f"{DARK_BLUE}[?]{WHITE} Enter...")
     await main_menu(guild)
@@ -191,15 +187,14 @@ async def delete_all(guild):
     print(f"{DARK_BLUE}{BOLD}=" * 60)
     print("")
     
-    confirm = input(f"{DARK_BLUE}[{RED}!{DARK_BLUE}]{WHITE} Delete ALL? (y/n): ").strip().lower()
+    confirm = input(f"{RED}[!]{WHITE} Delete ALL? (y/n): ").strip().lower()
     
     if confirm == "y":
         print(f"\n{DARK_BLUE}[+]{WHITE} Deleting all channels...\n")
         
-        chunk = 200
+        chunk = 500
         deleted = 0
         channels = list(guild.channels)
-        total = len(channels)
         
         for i in range(0, len(channels), chunk):
             batch = channels[i:i+chunk]
@@ -207,12 +202,12 @@ async def delete_all(guild):
             results = await asyncio.gather(*tasks, return_exceptions=True)
             for idx, r in enumerate(results):
                 if not isinstance(r, Exception):
-                    print(f"{DARK_BLUE}[{RED}-{DARK_BLUE}]{WHITE} Deleted: {batch[idx].name}")
+                    print(f"{GREEN}[+]{WHITE} Deleted: {batch[idx].name}")
                     deleted += 1
         
-        print(f"\n{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {deleted} channels deleted!")
+        print(f"\n{GREEN}[+]{WHITE} {deleted} channels deleted!")
     else:
-        print(f"{DARK_BLUE}[!]{WHITE} Cancelled!")
+        print(f"{RED}[!]{WHITE} Cancelled!")
     
     print("")
     input(f"{DARK_BLUE}[?]{WHITE} Enter...")
@@ -236,13 +231,13 @@ async def spam_all(guild):
     channels = [c for c in guild.channels if isinstance(c, discord.TextChannel)]
     
     if not channels:
-        print(f"{DARK_BLUE}[!]{WHITE} No channels!")
+        print(f"{RED}[!]{WHITE} No channels!")
         print("")
         input(f"{DARK_BLUE}[?]{WHITE} Enter...")
         await main_menu(guild)
         return
     
-    print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {len(channels)} channels")
+    print(f"{GREEN}[+]{WHITE} {len(channels)} channels")
     print("")
     
     msg = input(f"{DARK_BLUE}[?]{WHITE} Message: ").strip()
@@ -253,25 +248,22 @@ async def spam_all(guild):
     total = len(channels) * count
     sent = 0
     tasks = []
-    task_info = []
     
     for ch in channels:
         for i in range(count):
             tasks.append(ch.send(msg))
-            task_info.append(f"{msg}")
     
-    chunk = 1000
+    chunk = 2000
     
     for i in range(0, len(tasks), chunk):
         batch = tasks[i:i+chunk]
-        info_batch = task_info[i:i+chunk]
         results = await asyncio.gather(*batch, return_exceptions=True)
-        for idx, r in enumerate(results):
+        for r in results:
             if not isinstance(r, Exception):
-                print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} Sent: {info_batch[idx]}")
+                print(f"{GREEN}[+]{WHITE} Sent: {msg}")
                 sent += 1
     
-    print(f"\n{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {sent} messages sent!")
+    print(f"\n{GREEN}[+]{WHITE} {sent} messages sent!")
     print("")
     input(f"{DARK_BLUE}[?]{WHITE} Enter...")
     await main_menu(guild)
@@ -294,13 +286,13 @@ async def dm_all(guild):
     members = [m for m in guild.members if not m.bot]
     
     if not members:
-        print(f"{DARK_BLUE}[!]{WHITE} No members!")
+        print(f"{RED}[!]{WHITE} No members!")
         print("")
         input(f"{DARK_BLUE}[?]{WHITE} Enter...")
         await main_menu(guild)
         return
     
-    print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {len(members)} members")
+    print(f"{GREEN}[+]{WHITE} {len(members)} members")
     print("")
     
     msg = input(f"{DARK_BLUE}[?]{WHITE} Message: ").strip()
@@ -308,28 +300,25 @@ async def dm_all(guild):
     print(f"\n{DARK_BLUE}[+]{WHITE} Sending DM to {len(members)} members...\n")
     
     sent = 0
-    chunk = 100
-    total = len(members)
+    chunk = 200
     
     for i in range(0, len(members), chunk):
         batch = members[i:i+chunk]
         tasks = []
-        task_info = []
         for m in batch:
             try:
                 dm = await m.create_dm()
                 tasks.append(dm.send(msg))
-                task_info.append(f"{msg}")
             except:
                 pass
         if tasks:
             results = await asyncio.gather(*tasks, return_exceptions=True)
-            for idx, r in enumerate(results):
+            for r in results:
                 if not isinstance(r, Exception):
-                    print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} Sent DM: {task_info[idx]}")
+                    print(f"{GREEN}[+]{WHITE} Sent DM: {msg}")
                     sent += 1
     
-    print(f"\n{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {sent} DMs sent!")
+    print(f"\n{GREEN}[+]{WHITE} {sent} DMs sent!")
     print("")
     input(f"{DARK_BLUE}[?]{WHITE} Enter...")
     await main_menu(guild)
@@ -352,13 +341,13 @@ async def webhook_spam(guild):
     channels = [c for c in guild.channels if isinstance(c, discord.TextChannel)]
     
     if not channels:
-        print(f"{DARK_BLUE}[!]{WHITE} No channels!")
+        print(f"{RED}[!]{WHITE} No channels!")
         print("")
         input(f"{DARK_BLUE}[?]{WHITE} Enter...")
         await main_menu(guild)
         return
     
-    print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {len(channels)} channels")
+    print(f"{GREEN}[+]{WHITE} {len(channels)} channels")
     print("")
     
     name = input(f"{DARK_BLUE}[?]{WHITE} Webhook Name: ").strip()
@@ -367,7 +356,6 @@ async def webhook_spam(guild):
     
     print(f"\n{DARK_BLUE}[+]{WHITE} Creating {count} webhooks in {len(channels)} channels...\n")
     
-    # MAX SPEED - Create all webhooks at once
     all_tasks = []
     all_channels = []
     for ch in channels:
@@ -375,9 +363,8 @@ async def webhook_spam(guild):
             all_tasks.append(ch.create_webhook(name=name))
             all_channels.append(ch.name)
     
-    chunk = 500
+    chunk = 1000
     created = 0
-    total = len(all_tasks)
     all_webhooks = []
     
     for i in range(0, len(all_tasks), chunk):
@@ -386,35 +373,30 @@ async def webhook_spam(guild):
         results = await asyncio.gather(*batch, return_exceptions=True)
         for idx, r in enumerate(results):
             if not isinstance(r, Exception):
-                print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} Created: {channel_batch[idx]}")
+                print(f"{GREEN}[+]{WHITE} Created: {channel_batch[idx]}")
                 all_webhooks.append(r)
                 created += 1
     
     print(f"\n{DARK_BLUE}[+]{WHITE} Spamming with {len(all_webhooks)} webhooks...\n")
     
-    # MAX SPEED - Send all messages at once
     spam_tasks = []
-    spam_info = []
     for idx, wh in enumerate(all_webhooks):
         for i in range(5):
             spam_tasks.append(wh.send(msg))
-            spam_info.append(f"{msg}")
     
-    chunk = 500
+    chunk = 1000
     sent = 0
-    total_spam = len(spam_tasks)
     
     for i in range(0, len(spam_tasks), chunk):
         batch = spam_tasks[i:i+chunk]
-        info_batch = spam_info[i:i+chunk]
         results = await asyncio.gather(*batch, return_exceptions=True)
-        for idx, r in enumerate(results):
+        for r in results:
             if not isinstance(r, Exception):
-                print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} Sent: {info_batch[idx]}")
+                print(f"{GREEN}[+]{WHITE} Sent: {msg}")
                 sent += 1
     
-    print(f"\n{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {created} webhooks created!")
-    print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {sent} messages sent!")
+    print(f"\n{GREEN}[+]{WHITE} {created} webhooks created!")
+    print(f"{GREEN}[+]{WHITE} {sent} messages sent!")
     print("")
     input(f"{DARK_BLUE}[?]{WHITE} Enter...")
     await main_menu(guild)
@@ -422,6 +404,6 @@ async def webhook_spam(guild):
 try:
     bot.run(TOKEN)
 except discord.LoginFailure:
-    print(f"{DARK_BLUE}[!]{WHITE} Invalid Token!")
+    print(f"{RED}[!]{WHITE} Invalid Token!")
 except Exception as e:
-    print(f"{DARK_BLUE}[!]{WHITE} Error: {e}")
+    print(f"{RED}[!]{WHITE} Error: {e}")

@@ -24,7 +24,7 @@ def clear():
 clear()
 
 print(f"{BLUE}=" * 60)
-print(f"{BLUE}            RYNDE BOT V6")
+print(f"{BLUE}            RYNDE BOT V7")
 print(f"{BLUE}=" * 60)
 print("")
 
@@ -78,7 +78,7 @@ async def on_ready():
             print("")
             print(f"  {BLUE}[{CYAN}1{BLUE}]{WHITE} Create Rooms")
             print(f"  {BLUE}[{CYAN}2{BLUE}]{WHITE} Delete All")
-            print(f"  {BLUE}[{CYAN}3{BLUE}]{WHITE} Spam Rooms")
+            print(f"  {BLUE}[{CYAN}3{BLUE}]{WHITE} Spam All")
             print(f"  {BLUE}[{CYAN}4{BLUE}]{WHITE} Exit")
             print("")
             print(f"{BLUE}=" * 60)
@@ -93,7 +93,7 @@ async def on_ready():
                     elif cmd == "2":
                         await delete_all(guild)
                     elif cmd == "3":
-                        await spam_rooms(guild)
+                        await spam_all(guild)
                     elif cmd == "4":
                         print(f"{YELLOW}[!]{WHITE} Exiting...")
                         await bot.close()
@@ -125,10 +125,8 @@ async def create_rooms(guild):
     
     print(f"\n{CYAN}[+]{WHITE} Creating {count} rooms...\n")
     
-    tasks = []
-    for i in range(count):
-        tasks.append(guild.create_text_channel(name))
-    
+    # دفعة وحدة متوازية
+    tasks = [guild.create_text_channel(name) for _ in range(count)]
     channels = await asyncio.gather(*tasks, return_exceptions=True)
     created = sum(1 for c in channels if not isinstance(c, Exception))
     
@@ -144,15 +142,13 @@ async def delete_all(guild):
     print(f"{BLUE}=" * 60)
     print("")
     
-    confirm = input(f"{RED}[⚠]{WHITE} Delete ALL channels? (y/n): ").strip().lower()
+    confirm = input(f"{RED}[⚠]{WHITE} Delete ALL? (y/n): ").strip().lower()
     
     if confirm == "y":
         print(f"\n{CYAN}[+]{WHITE} Deleting all channels...\n")
         
-        tasks = []
-        for channel in guild.channels:
-            tasks.append(channel.delete())
-        
+        # دفعة وحدة متوازية
+        tasks = [channel.delete() for channel in guild.channels]
         results = await asyncio.gather(*tasks, return_exceptions=True)
         deleted = sum(1 for r in results if not isinstance(r, Exception))
         
@@ -164,10 +160,10 @@ async def delete_all(guild):
     input(f"{CYAN}[?]{WHITE} Enter...")
     await main_menu(guild)
 
-async def spam_rooms(guild):
+async def spam_all(guild):
     clear()
     print(f"{BLUE}=" * 60)
-    print(f"{BLUE}  [3] SPAM ROOMS")
+    print(f"{BLUE}  [3] SPAM ALL")
     print(f"{BLUE}=" * 60)
     print("")
     
@@ -189,15 +185,16 @@ async def spam_rooms(guild):
     
     print(f"\n{CYAN}[+]{WHITE} Sending {count} messages to {len(text_channels)} channels...\n")
     
-    # سبام متوازي لكل الرومات
+    # دفعة وحدة متوازية لكل الرومات
+    all_tasks = []
     for channel in text_channels:
-        tasks = []
         for i in range(count):
-            tasks.append(channel.send(msg))
-        await asyncio.gather(*tasks, return_exceptions=True)
-        print(f"{GREEN}[✓]{WHITE} {channel.name}")
+            all_tasks.append(channel.send(msg))
     
-    print(f"\n{GREEN}[✓]{WHITE} Done! Sent {count} messages to {len(text_channels)} channels!")
+    results = await asyncio.gather(*all_tasks, return_exceptions=True)
+    sent = sum(1 for r in results if not isinstance(r, Exception))
+    
+    print(f"{GREEN}[✓]{WHITE} Sent {sent} messages to {len(text_channels)} channels!")
     print("")
     input(f"{CYAN}[?]{WHITE} Enter...")
     await main_menu(guild)
@@ -218,7 +215,7 @@ async def main_menu(guild):
     print("")
     print(f"  {BLUE}[{CYAN}1{BLUE}]{WHITE} Create Rooms")
     print(f"  {BLUE}[{CYAN}2{BLUE}]{WHITE} Delete All")
-    print(f"  {BLUE}[{CYAN}3{BLUE}]{WHITE} Spam Rooms")
+    print(f"  {BLUE}[{CYAN}3{BLUE}]{WHITE} Spam All")
     print(f"  {BLUE}[{CYAN}4{BLUE}]{WHITE} Exit")
     print("")
     print(f"{BLUE}=" * 60)
@@ -235,7 +232,7 @@ async def main_menu(guild):
                 await delete_all(guild)
                 break
             elif cmd == "3":
-                await spam_rooms(guild)
+                await spam_all(guild)
                 break
             elif cmd == "4":
                 print(f"{YELLOW}[!]{WHITE} Exiting...")

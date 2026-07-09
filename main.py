@@ -12,6 +12,7 @@ CYAN = '\033[96m'
 WHITE = '\033[97m'
 GREEN = '\033[92m'
 RED = '\033[91m'
+YELLOW = '\033[93m'
 RESET = '\033[0m'
 BOLD = '\033[1m'
 
@@ -92,14 +93,15 @@ async def on_ready():
             print(f"  {DARK_BLUE}[{CYAN}1{DARK_BLUE}]{WHITE} Create Rooms")
             print(f"  {DARK_BLUE}[{CYAN}2{DARK_BLUE}]{WHITE} Delete All")
             print(f"  {DARK_BLUE}[{CYAN}3{DARK_BLUE}]{WHITE} Spam All")
-            print(f"  {DARK_BLUE}[{CYAN}4{DARK_BLUE}]{WHITE} Exit")
+            print(f"  {DARK_BLUE}[{CYAN}4{DARK_BLUE}]{WHITE} DM All")
+            print(f"  {DARK_BLUE}[{CYAN}5{DARK_BLUE}]{WHITE} Exit")
             print("")
             print(f"{DARK_BLUE}{BOLD}=" * 60)
             print("")
             
             while True:
                 try:
-                    cmd = input(f"{DARK_BLUE}[?]{WHITE} Option (1-4): ").strip()
+                    cmd = input(f"{DARK_BLUE}[?]{WHITE} Option (1-5): ").strip()
                     
                     if cmd == "1":
                         await create_rooms(guild)
@@ -108,6 +110,8 @@ async def on_ready():
                     elif cmd == "3":
                         await spam_all(guild)
                     elif cmd == "4":
+                        await dm_all(guild)
+                    elif cmd == "5":
                         print(f"{DARK_BLUE}[!]{WHITE} Exiting...")
                         await bot.close()
                         sys.exit()
@@ -138,13 +142,12 @@ async def create_rooms(guild):
     
     print(f"\n{DARK_BLUE}[+]{WHITE} Creating {count} rooms...\n")
     
-    # SUPER FAST - 100 per batch
     chunk_size = 100
     created = 0
     
     for i in range(0, count, chunk_size):
         chunk = min(chunk_size, count - i)
-        tasks = [guild.create_text_channel(name) for _ in range(chunk)]
+        tasks = [guild.create_text_channel(f"{name}-{i+j+1}") for j in range(chunk)]
         channels = await asyncio.gather(*tasks, return_exceptions=True)
         created += sum(1 for c in channels if not isinstance(c, Exception))
         print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {created}/{count}")
@@ -209,17 +212,14 @@ async def spam_all(guild):
     
     print(f"\n{DARK_BLUE}[+]{WHITE} Spamming {count} messages to {len(text_channels)} channels...\n")
     
-    # EXTREME SPAM - Parallel across all channels
     total_messages = len(text_channels) * count
     sent = 0
     
-    # Create tasks for all messages at once
     all_tasks = []
     for channel in text_channels:
         for i in range(count):
             all_tasks.append(channel.send(msg))
     
-    # Send in chunks of 200 for maximum speed
     chunk_size = 200
     
     for i in range(0, len(all_tasks), chunk_size):
@@ -229,6 +229,49 @@ async def spam_all(guild):
         print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {sent}/{total_messages}")
     
     print(f"\n{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} Sent {sent} messages to {len(text_channels)} channels!")
+    print("")
+    input(f"{DARK_BLUE}[?]{WHITE} Enter...")
+    await main_menu(guild)
+
+async def dm_all(guild):
+    clear()
+    print(f"{DARK_BLUE}{BOLD}=" * 60)
+    print(f"{DARK_BLUE}{BOLD}  [4] DM ALL")
+    print(f"{DARK_BLUE}{BOLD}=" * 60)
+    print("")
+    
+    members = [m for m in guild.members if not m.bot]
+    
+    if not members:
+        print(f"{DARK_BLUE}[!]{WHITE} No members found!")
+        print("")
+        input(f"{DARK_BLUE}[?]{WHITE} Enter...")
+        await main_menu(guild)
+        return
+    
+    print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {len(members)} members")
+    print("")
+    
+    msg = input(f"{DARK_BLUE}[?]{WHITE} Message: ").strip()
+    
+    print(f"\n{DARK_BLUE}[+]{WHITE} Sending DM to {len(members)} members...\n")
+    
+    sent = 0
+    chunk_size = 50
+    
+    for i in range(0, len(members), chunk_size):
+        chunk = members[i:i+chunk_size]
+        tasks = []
+        for member in chunk:
+            try:
+                tasks.append(member.send(msg))
+            except:
+                pass
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+        sent += sum(1 for r in results if not isinstance(r, Exception))
+        print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {sent}/{len(members)}")
+    
+    print(f"\n{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} Sent DM to {sent} members!")
     print("")
     input(f"{DARK_BLUE}[?]{WHITE} Enter...")
     await main_menu(guild)
@@ -258,14 +301,15 @@ async def main_menu(guild):
     print(f"  {DARK_BLUE}[{CYAN}1{DARK_BLUE}]{WHITE} Create Rooms")
     print(f"  {DARK_BLUE}[{CYAN}2{DARK_BLUE}]{WHITE} Delete All")
     print(f"  {DARK_BLUE}[{CYAN}3{DARK_BLUE}]{WHITE} Spam All")
-    print(f"  {DARK_BLUE}[{CYAN}4{DARK_BLUE}]{WHITE} Exit")
+    print(f"  {DARK_BLUE}[{CYAN}4{DARK_BLUE}]{WHITE} DM All")
+    print(f"  {DARK_BLUE}[{CYAN}5{DARK_BLUE}]{WHITE} Exit")
     print("")
     print(f"{DARK_BLUE}{BOLD}=" * 60)
     print("")
     
     while True:
         try:
-            cmd = input(f"{DARK_BLUE}[?]{WHITE} Option (1-4): ").strip()
+            cmd = input(f"{DARK_BLUE}[?]{WHITE} Option (1-5): ").strip()
             
             if cmd == "1":
                 await create_rooms(guild)
@@ -277,6 +321,9 @@ async def main_menu(guild):
                 await spam_all(guild)
                 break
             elif cmd == "4":
+                await dm_all(guild)
+                break
+            elif cmd == "5":
                 print(f"{DARK_BLUE}[!]{WHITE} Exiting...")
                 await bot.close()
                 sys.exit()

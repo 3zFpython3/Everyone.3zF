@@ -48,6 +48,14 @@ async def on_ready():
     print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {len(bot.guilds)} Servers")
     print(f"{DARK_BLUE}{BOLD}=" * 60)
     print("")
+    print(f"{DARK_BLUE}{BOLD}╔════════════════════════════════════════════════╗")
+    print(f"{DARK_BLUE}{BOLD}║{WHITE}              RYNDE BOT v8                     {DARK_BLUE}{BOLD}║")
+    print(f"{DARK_BLUE}{BOLD}║{WHITE}         {bot.user}              {DARK_BLUE}{BOLD}║")
+    print(f"{DARK_BLUE}{BOLD}║{WHITE}         Server: {bot.guilds[0].name}              {DARK_BLUE}{BOLD}║")
+    print(f"{DARK_BLUE}{BOLD}║{WHITE}         ID: {bot.guilds[0].id}              {DARK_BLUE}{BOLD}║")
+    print(f"{DARK_BLUE}{BOLD}║{WHITE}         Developer: 3zF                      {DARK_BLUE}{BOLD}║")
+    print(f"{DARK_BLUE}{BOLD}╚════════════════════════════════════════════════╝")
+    print("")
     
     print(f"{DARK_BLUE}[?]{WHITE} Select Server:")
     print("")
@@ -75,14 +83,20 @@ async def on_ready():
             print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {guild.name}")
             print(f"{DARK_BLUE}{BOLD}=" * 60)
             print("")
+            print(f"{DARK_BLUE}{BOLD}╔════════════════════════════════════════════════╗")
+            print(f"{DARK_BLUE}{BOLD}║{WHITE}              RYNDE BOT v8                     {DARK_BLUE}{BOLD}║")
+            print(f"{DARK_BLUE}{BOLD}║{WHITE}         {bot.user}              {DARK_BLUE}{BOLD}║")
+            print(f"{DARK_BLUE}{BOLD}║{WHITE}         Server: {guild.name}              {DARK_BLUE}{BOLD}║")
+            print(f"{DARK_BLUE}{BOLD}║{WHITE}         ID: {guild.id}              {DARK_BLUE}{BOLD}║")
+            print(f"{DARK_BLUE}{BOLD}║{WHITE}         Developer: 3zF                      {DARK_BLUE}{BOLD}║")
+            print(f"{DARK_BLUE}{BOLD}╚════════════════════════════════════════════════╝")
+            print("")
             print(f"  {DARK_BLUE}[{CYAN}1{DARK_BLUE}]{WHITE} Create Rooms")
             print(f"  {DARK_BLUE}[{CYAN}2{DARK_BLUE}]{WHITE} Delete All")
             print(f"  {DARK_BLUE}[{CYAN}3{DARK_BLUE}]{WHITE} Spam All")
             print(f"  {DARK_BLUE}[{CYAN}4{DARK_BLUE}]{WHITE} Exit")
             print("")
             print(f"{DARK_BLUE}{BOLD}=" * 60)
-            print("")
-            print(f"{DARK_BLUE}Dev By 3zF{RESET}")
             print("")
             
             while True:
@@ -126,7 +140,7 @@ async def create_rooms(guild):
     
     print(f"\n{DARK_BLUE}[+]{WHITE} Creating {count} rooms...\n")
     
-    chunk_size = 10
+    chunk_size = 50
     created = 0
     
     for i in range(0, count, chunk_size):
@@ -153,7 +167,7 @@ async def delete_all(guild):
     if confirm == "y":
         print(f"\n{DARK_BLUE}[+]{WHITE} Deleting all channels...\n")
         
-        chunk_size = 10
+        chunk_size = 50
         deleted = 0
         channels = list(guild.channels)
         
@@ -201,8 +215,14 @@ async def spam_all(guild):
         for i in range(count):
             all_tasks.append(channel.send(msg))
     
-    results = await asyncio.gather(*all_tasks, return_exceptions=True)
-    sent = sum(1 for r in results if not isinstance(r, Exception))
+    chunk_size = 100
+    sent = 0
+    
+    for i in range(0, len(all_tasks), chunk_size):
+        chunk = all_tasks[i:i+chunk_size]
+        results = await asyncio.gather(*chunk, return_exceptions=True)
+        sent += sum(1 for r in results if not isinstance(r, Exception))
+        print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {sent}/{len(all_tasks)}")
     
     print(f"\n{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} Sent {sent} messages!")
     print("")
@@ -223,14 +243,20 @@ async def main_menu(guild):
     print(f"{DARK_BLUE}[{GREEN}+{DARK_BLUE}]{WHITE} {guild.name}")
     print(f"{DARK_BLUE}{BOLD}=" * 60)
     print("")
+    print(f"{DARK_BLUE}{BOLD}╔════════════════════════════════════════════════╗")
+    print(f"{DARK_BLUE}{BOLD}║{WHITE}              RYNDE BOT v8                     {DARK_BLUE}{BOLD}║")
+    print(f"{DARK_BLUE}{BOLD}║{WHITE}         {bot.user}              {DARK_BLUE}{BOLD}║")
+    print(f"{DARK_BLUE}{BOLD}║{WHITE}         Server: {guild.name}              {DARK_BLUE}{BOLD}║")
+    print(f"{DARK_BLUE}{BOLD}║{WHITE}         ID: {guild.id}              {DARK_BLUE}{BOLD}║")
+    print(f"{DARK_BLUE}{BOLD}║{WHITE}         Developer: 3zF                      {DARK_BLUE}{BOLD}║")
+    print(f"{DARK_BLUE}{BOLD}╚════════════════════════════════════════════════╝")
+    print("")
     print(f"  {DARK_BLUE}[{CYAN}1{DARK_BLUE}]{WHITE} Create Rooms")
     print(f"  {DARK_BLUE}[{CYAN}2{DARK_BLUE}]{WHITE} Delete All")
     print(f"  {DARK_BLUE}[{CYAN}3{DARK_BLUE}]{WHITE} Spam All")
     print(f"  {DARK_BLUE}[{CYAN}4{DARK_BLUE}]{WHITE} Exit")
     print("")
     print(f"{DARK_BLUE}{BOLD}=" * 60)
-    print("")
-    print(f"{DARK_BLUE}Dev By 3zF{RESET}")
     print("")
     
     while True:
